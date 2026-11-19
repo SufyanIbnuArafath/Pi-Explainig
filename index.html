@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pi (π): The Number That Never Ends</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f0ff; --card:#ffffff; --ink:#271a63; --muted:#5a5190; --sun:#ffc933; --teal:#12a594; --coral:#ff6b57; --line:#d9d0ff;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#17123a;--card:#241c57;--ink:#f1edff;--muted:#b6aee6;--line:#3a3080;--teal:#3fd6c3;}
+}
+:root[data-theme="dark"]{--bg:#17123a;--card:#241c57;--ink:#f1edff;--muted:#b6aee6;--line:#3a3080;--teal:#3fd6c3;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.65 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque","DM Sans",sans-serif;line-height:1.05;margin:0 0 .5em}
+h2{font-size:clamp(2rem,5vw,3.2rem);font-weight:800}
+h3{font-size:1.3rem;font-weight:700}
+p{margin:0 0 1em;max-width:62ch}
+section{padding:72px 6vw;max-width:1100px;margin:0 auto}
+.hero{padding-top:56px;text-align:left}
+.hero h1{font-size:clamp(3.2rem,11vw,8rem);font-weight:800;letter-spacing:-.03em}
+.hero h1 .pi{color:var(--sun);-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;font-size:1.15em}
+.lead{font-size:1.3rem;color:var(--muted)}
+.big{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:clamp(1.6rem,4vw,2.4rem)}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:28px;padding:24px;box-shadow:8px 8px 0 var(--ink)}
+svg text{font-family:"DM Sans",sans-serif}
+.controls{display:flex;gap:14px;align-items:center;margin-top:14px;flex-wrap:wrap}
+button{font:700 1rem "DM Sans",sans-serif;background:var(--sun);color:#271a63;border:2px solid var(--ink);border-radius:999px;padding:10px 22px;cursor:pointer}
+button:hover{background:#ffd95e}
+button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+input[type=range]{flex:1;min-width:140px;accent-color:var(--coral)}
+input[type=number],input[type=text]{font:500 1.1rem "DM Sans",sans-serif;padding:10px 14px;border:2px solid var(--ink);border-radius:14px;background:var(--bg);color:var(--ink);width:100%}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.tile{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px}
+.tile b{color:var(--coral)}
+.formula{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:2.2rem;color:var(--teal)}
+.timeline{border-left:4px solid var(--sun);margin:0;padding:0 0 0 24px;list-style:none}
+.timeline li{margin-bottom:26px;position:relative}
+.timeline li::before{content:"";position:absolute;left:-36px;top:8px;width:16px;height:16px;border-radius:50%;background:var(--sun);border:3px solid var(--ink)}
+.timeline .yr{font:800 1.3rem "Bricolage Grotesque",sans-serif;color:var(--coral)}
+.digits{font:700 1.5rem/1.8 "Bricolage Grotesque",sans-serif;word-break:break-all;letter-spacing:.05em}
+.digits span{display:inline-block;transition:transform .15s}
+.digits span:hover{transform:translateY(-6px) scale(1.3);color:var(--coral)}
+.row{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-top:10px}
+.out{font:800 1.8rem "Bricolage Grotesque",sans-serif;color:var(--teal)}
+label{font-weight:700;display:block;margin-bottom:6px}
+.ok{color:var(--teal);font-weight:700}.bad{color:var(--coral);font-weight:700}
+footer{text-align:center;padding:40px 6vw 60px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.digits span{transition:none}}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <h1>Meet <span class="pi">π</span>,<br>the number that never ends.</h1>
+  <p class="lead">Take any circle. Divide the distance around it by the distance across it. You always get the same number: 3.14159… It’s true for a coin, a pizza and the planet Earth.</p>
+  <div class="panel" aria-label="Interactive demo: a circle rolling along a line">
+    <svg id="demo" viewBox="0 0 620 230" width="100%" role="img" aria-label="A circle rolls one full turn along a line. The distance covered equals pi times its width.">
+      <line x1="40" y1="150" x2="590" y2="150" stroke="currentColor" stroke-width="2" opacity=".35"/>
+      <line id="trace" x1="40" y1="150" x2="40" y2="150" stroke="#ff6b57" stroke-width="7" stroke-linecap="round"/>
+      <circle id="wheel" cx="40" cy="100" r="50" fill="#ffc933" fill-opacity=".85" stroke="currentColor" stroke-width="3"/>
+      <line id="spoke" x1="0" y1="0" x2="0" y2="0" stroke="currentColor" stroke-width="3"/>
+      <circle id="dot" r="7" fill="#ff6b57" stroke="currentColor" stroke-width="2"/>
+      <g id="ruler"></g>
+      <text id="readout" x="310" y="22" text-anchor="middle" font-size="20" font-weight="700" fill="currentColor">Press play</text>
+    </svg>
+    <div class="controls">
+      <button id="play" type="button">Roll the circle</button>
+      <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Rolling progress">
+    </div>
+    <p style="margin:14px 0 0;color:var(--muted)">The red line is the circle’s edge, unrolled. It fits <b>3 whole widths and a bit more</b>. That “bit” is 0.14159…, and it goes on forever.</p>
+  </div>
+</section>
+
+<section>
+  <h2>So what is π, really?</h2>
+  <div class="grid">
+    <div class="tile"><div class="formula">π = C ÷ d</div><p>C is the circumference (distance around). d is the diameter (distance across through the center). Their ratio is always π.</p></div>
+    <div class="tile"><h3>It’s a ratio</h3><p>Big circle or tiny circle, the ratio doesn’t change. That’s why π is a constant, one fixed number for every circle in the universe.</p></div>
+    <div class="tile"><h3>It’s irrational</h3><p>You can’t write π as a fraction of two whole numbers. Its decimals never end and never settle into a repeating pattern.</p></div>
+    <div class="tile"><h3>It’s transcendental</h3><p>Even stronger: π is not the answer to any polynomial equation with whole-number coefficients. This was proved in 1882, and it means you can’t “square the circle” with just a ruler and compass.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Try it: the π calculator</h2>
+  <div class="panel">
+    <label for="r">Type a radius (distance from the center to the edge)</label>
+    <input id="r" type="number" min="0" step="any" value="5">
+    <div class="row">
+      <div><div>Circumference<br><small>2 × π × r</small></div><div class="out" id="oc"></div></div>
+      <div><div>Area<br><small>π × r × r</small></div><div class="out" id="oa"></div></div>
+      <div><div>Sphere volume<br><small>4⁄3 × π × r³</small></div><div class="out" id="ov"></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>A 4,000-year chase</h2>
+  <ul class="timeline">
+    <li><div class="yr">About 1900 BCE</div>Babylonians use 3.125. Egyptians use about 3.16. Close enough to build with.</li>
+    <li><div class="yr">About 250 BCE</div>Archimedes traps π between 3 10⁄71 and 3 1⁄7 by squeezing a circle between two 96-sided shapes.</li>
+    <li><div class="yr">About 480 CE</div>Zu Chongzhi in China finds 355⁄113, correct to 6 decimals. It stayed the best estimate for nearly 900 years.</li>
+    <li><div class="yr">1400s, Kerala, India</div>Madhava of Sangamagrama and the Kerala school discover infinite series for π, a big step toward modern calculus: π/4 = 1 − 1/3 + 1/5 − 1/7 + …</li>
+    <li><div class="yr">1706 and 1737</div>William Jones first uses the Greek letter π. Leonhard Euler makes it famous, and everyone follows.</li>
+    <li><div class="yr">Today</div>Computers have calculated π to over 100 trillion digits. Not because we need that many, but to test supercomputers and algorithms.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>The first 50 digits</h2>
+  <div class="panel"><div class="digits" id="digits" aria-label="First fifty digits of pi"></div>
+    <p style="margin:12px 0 0;color:var(--muted)">NASA uses only about 15 or 16 digits for space navigation. With 40 digits, you could measure the whole visible universe to the width of a hydrogen atom.</p></div>
+</section>
+
+<section>
+  <h2>Beat your memory</h2>
+  <div class="panel">
+    <label for="mem">Type the digits of π after “3.” as far as you can remember</label>
+    <input id="mem" type="text" inputmode="numeric" autocomplete="off" placeholder="14159…">
+    <p id="memout" style="margin:14px 0 0" aria-live="polite"></p>
+  </div>
+</section>
+
+<section>
+  <h2>Where π shows up (not only circles)</h2>
+  <div class="grid">
+    <div class="tile"><h3>Waves and sound</h3><p>Music, radio and light are waves, and waves are built from sines and cosines. π is baked into them.</p></div>
+    <div class="tile"><h3>Rivers</h3><p>The winding length of a river divided by its straight-line distance tends to average close to π.</p></div>
+    <div class="tile"><h3>Dropping needles</h3><p>Toss needles on a lined floor. The share that cross a line lets you estimate π. It’s called Buffon’s needle.</p></div>
+    <div class="tile"><h3>Your body</h3><p>Eyes, the DNA helix and the heart’s rhythms are all studied with equations that contain π.</p></div>
+    <div class="tile"><h3>Pi Day</h3><p>Celebrated every <b>March 14</b> (3/14). Albert Einstein was born that day in 1879.</p></div>
+    <div class="tile"><h3>Fun fact</h3><p>The Greek letter π was picked because it’s the first letter of <i>perimetros</i>, the Greek word for “perimeter.”</p></div>
+  </div>
+</section>
+
+<footer><p style="margin:0 auto">Made for a math class project. Remember: π is 3.14159… and counting.</p></footer>
+
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var PI="14159265358979323846264338327950288419716939937510";
+
+  /* Rolling circle */
+  var R=50,X0=40,CY=100,TAU=Math.PI*2,C=TAU*R;
+  var ruler=$("ruler"),ns="http://www.w3.org/2000/svg";
+  var fill=document.createElementNS(ns,"rect");
+  fill.setAttribute("x",X0);fill.setAttribute("y",170);fill.setAttribute("height",26);fill.setAttribute("fill","#12a594");fill.setAttribute("fill-opacity",".75");
+  ruler.appendChild(fill);
+  for(var i=0;i<4;i++){
+    var w=i<3?2*R:C-6*R;
+    var b=document.createElementNS(ns,"rect");
+    b.setAttribute("x",X0+i*2*R);b.setAttribute("y",170);b.setAttribute("width",w);b.setAttribute("height",26);
+    b.setAttribute("fill","none");b.setAttribute("stroke","currentColor");b.setAttribute("stroke-width","2");
+    ruler.appendChild(b);
+    var t=document.createElementNS(ns,"text");
+    t.setAttribute("x",X0+i*2*R+w/2);t.setAttribute("y",216);t.setAttribute("text-anchor","middle");t.setAttribute("font-size","14");t.setAttribute("fill","currentColor");
+    t.textContent=i<3?"1 width":"0.14…";
+    ruler.appendChild(t);
+  }
+  function draw(p){
+    var th=p*TAU, cx=X0+R*th;
+    $("wheel").setAttribute("cx",cx);
+    var dx=cx-R*Math.sin(th), dy=CY+R*Math.cos(th);
+    $("dot").setAttribute("cx",dx);$("dot").setAttribute("cy",dy);
+    $("spoke").setAttribute("x1",cx);$("spoke").setAttribute("y1",CY);$("spoke").setAttribute("x2",dx);$("spoke").setAttribute("y2",dy);
+    $("trace").setAttribute("x2",X0+R*th);
+    fill.setAttribute("width",R*th);
+    var widths=(R*th)/(2*R);
+    $("readout").textContent=p>=1?"One full turn = 3.14159… widths = π":"Distance rolled: "+widths.toFixed(2)+" widths";
+  }
+  var scrub=$("scrub"),raf=null;
+  scrub.addEventListener("input",function(){draw(scrub.value/1000)});
+  $("play").addEventListener("click",function(){
+    if(raf)cancelAnimationFrame(raf);
+    var start=null,dur=matchMedia("(prefers-reduced-motion: reduce)").matches?1:4500;
+    function step(ts){
+      if(!start)start=ts;
+      var p=Math.min((ts-start)/dur,1);
+      scrub.value=p*1000;draw(p);
+      if(p<1)raf=requestAnimationFrame(step);
+    }
+    raf=requestAnimationFrame(step);
+  });
+  draw(0);
+
+  /* Calculator */
+  function calc(){
+    var r=parseFloat($("r").value);
+    if(isNaN(r)||r<0){$("oc").textContent=$("oa").textContent=$("ov").textContent="–";return}
+    var f=function(n){return n.toLocaleString(undefined,{maximumFractionDigits:3})};
+    $("oc").textContent=f(2*Math.PI*r);
+    $("oa").textContent=f(Math.PI*r*r);
+    $("ov").textContent=f(4/3*Math.PI*r*r*r);
+  }
+  $("r").addEventListener("input",calc);calc();
+
+  /* Digits */
+  $("digits").innerHTML="3."+PI.split("").map(function(d){return "<span>"+d+"</span>"}).join("");
+
+  /* Memory game */
+  $("mem").addEventListener("input",function(){
+    var v=this.value.replace(/[^0-9]/g,""),n=0;
+    while(n<v.length&&v[n]===PI[n])n++;
+    var out=$("memout");
+    if(!v.length){out.textContent="";return}
+    if(n===v.length){out.innerHTML='<span class="ok">Correct so far: '+n+' digit'+(n===1?"":"s")+'.</span>'+(n>=PI.length?" You got all 50!":"")}
+    else{out.innerHTML='<span class="bad">Oops, digit '+(n+1)+' should be '+PI[n]+'.</span> You got '+n+' right in a row.'}
+  });
+})();
+</script>
+</body>
+</html>
